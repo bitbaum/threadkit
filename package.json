@@ -1,0 +1,53 @@
+{
+  "name": "threadkit",
+  "version": "0.1.0",
+  "description": "Headless multi-participant message threads. Permission is participation, unread is per-person, and an AI can be a participant subject to the same visibility rules as everyone else.",
+  "license": "MIT",
+  "author": "Mao Nakamoto",
+  "homepage": "https://github.com/maonakamoto/threadkit#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maonakamoto/threadkit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/maonakamoto/threadkit/issues"
+  },
+  "keywords": [
+    "messaging",
+    "chat",
+    "threads",
+    "group-chat",
+    "ai",
+    "authorization",
+    "headless"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test test/*.test.js",
+    "verify": "npm run build && npm test",
+    "prepare": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.8.2"
+  }
+}
