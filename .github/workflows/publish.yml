@@ -12,6 +12,17 @@ on:
   push:
     branches: [main]
     tags: ['v*']
+  # The reconciler, and the reason this is reliable. A merge made with
+  # GITHUB_TOKEN (auto-merge, or any bot) starts no workflow, so the push
+  # trigger above silently does not fire for exactly the merges that matter.
+  # This repo has no auto-merge today, which is precisely why the schedule
+  # belongs here now rather than after it is added and a release goes missing.
+  #
+  # The schedule asks the registry the same idempotent question on a timer:
+  # is package.json's version published? A release missed by any means goes
+  # out within the hour without anyone noticing it was missed.
+  schedule:
+    - cron: '17 * * * *'
   workflow_dispatch:
 
 jobs:
