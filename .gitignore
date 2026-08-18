@@ -1,3 +1,6 @@
 node_modules/
 dist/
 *.tgz
+# Per-session git worktrees. Never lint, test, or publish from these — a stale
+# copy of the repo here is otherwise picked up as if it were source.
+.claude/
