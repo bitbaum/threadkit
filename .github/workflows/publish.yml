@@ -12,17 +12,14 @@ on:
   push:
     branches: [main]
     tags: ['v*']
-  # The reconciler, and the reason this is reliable. A merge made with
-  # GITHUB_TOKEN (auto-merge, or any bot) starts no workflow, so the push
-  # trigger above silently does not fire for exactly the merges that matter.
-  # This repo has no auto-merge today, which is precisely why the schedule
-  # belongs here now rather than after it is added and a release goes missing.
-  #
-  # The schedule asks the registry the same idempotent question on a timer:
-  # is package.json's version published? A release missed by any means goes
-  # out within the hour without anyone noticing it was missed.
+  # The reconciler, and the reason this is reliable. A merge made by auto-merge
+  # uses GITHUB_TOKEN, and a push with that token starts no workflow — so the
+  # push trigger above silently does not fire for exactly the merges that matter.
+  # The schedule asks the registry the same idempotent question on a timer: is
+  # package.json's version published? If a release was missed by any means, it
+  # goes out within the hour without anyone noticing it was missed.
   schedule:
-    - cron: '17 * * * *'
+    - cron: '43 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -64,14 +61,11 @@ jobs:
       - if: steps.check.outputs.publish == 'true'
         run: npm run verify
 
-      # Bootstrap auth. Trusted publishing (OIDC) needs no token and is the
-      # destination; until it is configured on the package, NPM_TOKEN is what
-      # authenticates. The token expires — token-health.yml warns before it does,
-      # rather than letting a release be the thing that discovers it.
+      # Auth is trusted publishing (OIDC): npm accepts this job's identity token
+      # because the package's Trusted Publisher is pinned to exactly this repo
+      # and workflow. No npm token exists anywhere, so none can leak or expire.
       - if: steps.check.outputs.publish == 'true'
         run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Tag the released commit
         if: steps.check.outputs.publish == 'true'
