@@ -4,13 +4,13 @@
   "description": "Headless multi-participant message threads. Permission is participation, unread is per-person, and an AI can be a participant subject to the same visibility rules as everyone else.",
   "license": "MIT",
   "author": "Mao Nakamoto",
-  "homepage": "https://github.com/maonakamoto/threadkit#readme",
+  "homepage": "https://github.com/bitbaum/threadkit#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/maonakamoto/threadkit.git"
+    "url": "git+https://github.com/bitbaum/threadkit.git"
   },
   "bugs": {
-    "url": "https://github.com/maonakamoto/threadkit/issues"
+    "url": "https://github.com/bitbaum/threadkit/issues"
   },
   "keywords": [
     "messaging",
