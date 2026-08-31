@@ -22,15 +22,5 @@ export { unreadCount, unreadMessages, unreadThreadCount } from './unread.js';
 
 export { compareMessages, isPending, mergeMessages } from './merge.js';
 
-export {
-  afterEveryMessage,
-  defaultRespondPolicy,
-  runAiTurn,
-  whenMentioned,
-} from './ai.js';
-export type {
-  AiParticipantConfig,
-  AiTurnContext,
-  AiTurnResult,
-  RespondPolicy,
-} from './ai.js';
+export { afterEveryMessage, defaultRespondPolicy, runAiTurn, whenMentioned } from './ai.js';
+export type { AiParticipantConfig, AiTurnContext, AiTurnResult, RespondPolicy } from './ai.js';

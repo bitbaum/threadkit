@@ -26,7 +26,7 @@ export function compareMessages(a: Message, b: Message): number {
  */
 export function mergeMessages(
   existing: readonly Message[],
-  incoming: readonly Message[]
+  incoming: readonly Message[],
 ): Message[] {
   const byId = new Map<string, Message>();
   const idByClientId = new Map<string, string>();

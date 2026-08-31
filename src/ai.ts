@@ -67,11 +67,11 @@ export function whenMentioned(aliases: readonly string[]): RespondPolicy {
   // addressed to it.
   const patterns = aliases
     .filter(Boolean)
-    .map(a => new RegExp(`(^|\\W)${a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(\\W|$)`, 'i'));
+    .map((a) => new RegExp(`(^|\\W)${a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(\\W|$)`, 'i'));
   return ({ visible, self }) => {
     const last = visible[visible.length - 1];
     if (!last || last.authorId === self.actorId) return false;
-    return patterns.some(re => re.test(last.body));
+    return patterns.some((re) => re.test(last.body));
   };
 }
 
@@ -84,7 +84,7 @@ export function whenMentioned(aliases: readonly string[]): RespondPolicy {
  * clinical thread unusable the moment an assistant joined.
  */
 export function defaultRespondPolicy(ctx: AiTurnContext): boolean {
-  const active = ctx.thread.participants.filter(p => !p.leftAt);
+  const active = ctx.thread.participants.filter((p) => !p.leftAt);
   if (active.length <= 2) return afterEveryMessage(ctx);
   return whenMentioned([ctx.self.role ?? 'assistant', 'ai'])(ctx);
 }
@@ -98,12 +98,9 @@ function trailingSelfMessages(visible: readonly Message[], actorId: string): num
   return n;
 }
 
-function renderTranscript(
-  ctx: AiTurnContext,
-  label: (p: Participant) => string
-): string {
+function renderTranscript(ctx: AiTurnContext, label: (p: Participant) => string): string {
   return ctx.visible
-    .map(m => {
+    .map((m) => {
       const author = findParticipant(ctx.thread, m.authorId);
       const who = author ? label(author) : 'unknown';
       return `${who}: ${m.body}`;
@@ -124,7 +121,7 @@ function renderTranscript(
 export async function runAiTurn(
   thread: Thread,
   allMessages: readonly Message[],
-  config: AiParticipantConfig
+  config: AiParticipantConfig,
 ): Promise<AiTurnResult> {
   const self = findParticipant(thread, config.actorId);
   if (!self) return { status: 'skipped', reason: 'not a participant in this thread' };

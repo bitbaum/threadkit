@@ -52,7 +52,7 @@ before(() => {
     cwd: process.cwd(),
     stdio: ['ignore', 'ignore', 'inherit'],
   });
-  const tarball = readdirSync(workspace).find(f => f.endsWith('.tgz'));
+  const tarball = readdirSync(workspace).find((f) => f.endsWith('.tgz'));
   assert.ok(tarball, 'npm pack produced no tarball');
 
   execFileSync('tar', ['-xzf', join(workspace, tarball), '-C', installed, '--strip-components=1']);
@@ -67,14 +67,14 @@ before(() => {
       'try { out.resolved = import.meta.resolve("threadkit"); } catch { out.resolved = null; }',
       'try { out.exports = Object.keys(await import("threadkit")).sort(); } catch { out.exports = null; }',
       'console.log(JSON.stringify(out));',
-    ].join('\n')
+    ].join('\n'),
   );
 
   probe = JSON.parse(
     execFileSync('node', [join(workspace, 'probe.mjs')], {
       cwd: workspace,
       encoding: 'utf8',
-    })
+    }),
   );
 });
 
@@ -94,12 +94,12 @@ test('the type declarations it advertises are actually in the tarball', () => {
     execFileSync('node', ['-p', 'JSON.stringify(require("./package.json"))'], {
       cwd: installed,
       encoding: 'utf8',
-    })
+    }),
   );
   const types = pkg.exports['.'].types;
   assert.ok(
     existsSync(join(installed, types)),
-    `the package advertises types at ${types}, which is not in the tarball`
+    `the package advertises types at ${types}, which is not in the tarball`,
   );
 });
 

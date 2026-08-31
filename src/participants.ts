@@ -10,11 +10,8 @@ import type { Message, Participant, Thread } from './types.js';
  * thread does not have that failure mode.
  */
 
-export function findParticipant(
-  thread: Thread,
-  actorId: string
-): Participant | undefined {
-  return thread.participants.find(p => p.actorId === actorId);
+export function findParticipant(thread: Thread, actorId: string): Participant | undefined {
+  return thread.participants.find((p) => p.actorId === actorId);
 }
 
 /** Has this actor ever been part of the thread? Necessary, never sufficient — see `canSeeMessage`. */
@@ -63,11 +60,11 @@ export function canSeeMessage(p: Participant, message: Message): boolean {
 export function visibleMessages(
   thread: Thread,
   actorId: string,
-  messages: readonly Message[]
+  messages: readonly Message[],
 ): Message[] {
   const p = findParticipant(thread, actorId);
   if (!p) return [];
-  return messages.filter(m => m.threadId === thread.id && canSeeMessage(p, m));
+  return messages.filter((m) => m.threadId === thread.id && canSeeMessage(p, m));
 }
 
 /**
@@ -78,7 +75,7 @@ export function visibleMessages(
  * access that does not exist.
  */
 export function readersOf(thread: Thread, message: Message): Participant[] {
-  return thread.participants.filter(p => {
+  return thread.participants.filter((p) => {
     if (p.actorId === message.authorId) return false;
     if (!canSeeMessage(p, message)) return false;
     if (!p.lastReadAt) return false;

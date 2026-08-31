@@ -15,12 +15,12 @@ import { findParticipant, canSeeMessage } from './participants.js';
 export function unreadMessages(
   thread: Thread,
   actorId: string,
-  messages: readonly Message[]
+  messages: readonly Message[],
 ): Message[] {
   const p = findParticipant(thread, actorId);
   if (!p) return [];
   const since = p.lastReadAt?.getTime() ?? null;
-  return messages.filter(m => {
+  return messages.filter((m) => {
     if (m.threadId !== thread.id) return false;
     if (m.authorId === actorId) return false;
     if (!canSeeMessage(p, m)) return false;
@@ -30,11 +30,7 @@ export function unreadMessages(
   });
 }
 
-export function unreadCount(
-  thread: Thread,
-  actorId: string,
-  messages: readonly Message[]
-): number {
+export function unreadCount(thread: Thread, actorId: string, messages: readonly Message[]): number {
   return unreadMessages(thread, actorId, messages).length;
 }
 
@@ -46,7 +42,7 @@ export function unreadCount(
  */
 export function unreadThreadCount(
   entries: readonly { thread: Thread; messages: readonly Message[] }[],
-  actorId: string
+  actorId: string,
 ): number {
-  return entries.filter(e => unreadCount(e.thread, actorId, e.messages) > 0).length;
+  return entries.filter((e) => unreadCount(e.thread, actorId, e.messages) > 0).length;
 }
