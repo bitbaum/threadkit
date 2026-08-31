@@ -18,7 +18,7 @@ function msg(id, authorId, createdAt, body = 'hello') {
 /** Records what the model was shown, so the test can assert on the prompt itself. */
 function spyComplete(reply = 'a reply') {
   const seen = [];
-  const complete = async input => {
+  const complete = async (input) => {
     seen.push(input);
     return reply;
   };
@@ -47,7 +47,7 @@ test('the AI sees only what it was granted, not the whole transcript', async () 
   assert.equal(seen.length, 1);
   assert.ok(
     !seen[0].prompt.includes('private history'),
-    'a model added later must not be handed the history it was not granted'
+    'a model added later must not be handed the history it was not granted',
   );
   assert.ok(seen[0].prompt.includes('summarise my sleep'));
 });

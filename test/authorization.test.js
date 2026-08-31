@@ -1,13 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import {
-  canRead,
-  canWrite,
-  readersOf,
-  unreadCount,
-  visibleMessages,
-} from '../dist/index.js';
+import { canRead, canWrite, readersOf, unreadCount, visibleMessages } from '../dist/index.js';
 
 const T0 = new Date('2026-01-01T09:00:00Z');
 const T1 = new Date('2026-01-01T10:00:00Z');
@@ -40,7 +34,7 @@ test('a clinician added later does not see what was said before they joined', ()
   const t = thread([patient, drA, drB]);
   const messages = [msg('m1', 'patient-1', T1), msg('m2', 'dr-a', T3)];
 
-  const seen = visibleMessages(t, 'dr-b', messages).map(m => m.id);
+  const seen = visibleMessages(t, 'dr-b', messages).map((m) => m.id);
   assert.deepEqual(seen, ['m2'], 'history before joining is not granted by default');
 });
 
@@ -55,7 +49,7 @@ test('granting thread-start hands over the whole history, on purpose', () => {
   const t = thread([patient, drA, drB]);
   const messages = [msg('m1', 'patient-1', T1), msg('m2', 'dr-a', T3)];
 
-  const seen = visibleMessages(t, 'dr-b', messages).map(m => m.id);
+  const seen = visibleMessages(t, 'dr-b', messages).map((m) => m.id);
   assert.deepEqual(seen, ['m1', 'm2']);
 });
 
@@ -70,7 +64,10 @@ test('someone who left keeps their history and stops receiving what comes next',
   const t = thread([patient, locum]);
   const messages = [msg('m1', 'patient-1', T1), msg('m2', 'patient-1', T3)];
 
-  assert.deepEqual(visibleMessages(t, 'locum', messages).map(m => m.id), ['m1']);
+  assert.deepEqual(
+    visibleMessages(t, 'locum', messages).map((m) => m.id),
+    ['m1'],
+  );
   assert.equal(canWrite(t, 'locum', T3), false, 'a departed participant loses their voice');
   assert.equal(canRead(t, 'locum'), true, 'but not what they already saw');
 });
@@ -112,5 +109,8 @@ test('a read receipt never implies access the reader does not have', () => {
   const early = msg('m1', 'patient-1', T1);
 
   // dr-b's clock says they have read up to T3, but m1 predates their window.
-  assert.deepEqual(readersOf(t, early).map(p => p.actorId), []);
+  assert.deepEqual(
+    readersOf(t, early).map((p) => p.actorId),
+    [],
+  );
 });

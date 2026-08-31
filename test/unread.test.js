@@ -41,8 +41,8 @@ test('a participant who has never read owes every visible message from someone e
   const messages = [msg('m1', 'patient-1', T1), msg('m2', 'patient-1', T2)];
 
   assert.deepEqual(
-    unreadMessages(thread, 'dr-a', messages).map(m => m.id),
-    ['m1', 'm2']
+    unreadMessages(thread, 'dr-a', messages).map((m) => m.id),
+    ['m1', 'm2'],
   );
 });
 
@@ -55,14 +55,14 @@ test('unread never reaches back past the day you joined', () => {
   assert.equal(
     unreadCount(thread, 'dr-b', messages),
     0,
-    'a message from before dr-b joined is not theirs to owe'
+    'a message from before dr-b joined is not theirs to owe',
   );
 });
 
 test('the nav badge counts threads that want you, not messages to read', () => {
   const me = { actorId: 'me', kind: 'human', joinedAt: T0, lastReadAt: null };
   const other = { actorId: 'other', kind: 'human', joinedAt: T0 };
-  const mk = id => ({ id, participants: [me, other], createdAt: T0 });
+  const mk = (id) => ({ id, participants: [me, other], createdAt: T0 });
 
   const entries = [
     {
@@ -75,5 +75,9 @@ test('the nav badge counts threads that want you, not messages to read', () => {
     { thread: mk('t2'), messages: [] },
   ];
 
-  assert.equal(unreadThreadCount(entries, 'me'), 1, 'two unread messages in one thread is one badge');
+  assert.equal(
+    unreadThreadCount(entries, 'me'),
+    1,
+    'two unread messages in one thread is one badge',
+  );
 });

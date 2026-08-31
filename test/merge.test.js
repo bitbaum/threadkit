@@ -41,8 +41,8 @@ test('messages sharing a timestamp keep a stable order', () => {
   const a = { id: 'b', threadId: 't1', authorId: 'x', body: 'a', createdAt: T1 };
   const b = { id: 'a', threadId: 't1', authorId: 'x', body: 'b', createdAt: T1 };
 
-  const once = mergeMessages([a, b], []).map(m => m.id);
-  const twice = mergeMessages([b, a], []).map(m => m.id);
+  const once = mergeMessages([a, b], []).map((m) => m.id);
+  const twice = mergeMessages([b, a], []).map((m) => m.id);
   assert.deepEqual(once, twice, 'insertion order must not change what the user sees');
   assert.deepEqual(once, ['a', 'b']);
 });
@@ -51,7 +51,10 @@ test('merging is ordered by time, not by arrival', () => {
   const late = { id: 'm2', threadId: 't1', authorId: 'x', body: 'second', createdAt: T2 };
   const early = { id: 'm1', threadId: 't1', authorId: 'x', body: 'first', createdAt: T1 };
 
-  assert.deepEqual(mergeMessages([late], [early]).map(m => m.id), ['m1', 'm2']);
+  assert.deepEqual(
+    mergeMessages([late], [early]).map((m) => m.id),
+    ['m1', 'm2'],
+  );
 });
 
 test('a pending message is distinguishable from a confirmed one', () => {
