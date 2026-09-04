@@ -5,7 +5,7 @@ Headless multi-participant message threads, with AI participants that obey the s
 No UI, no database, no SDK. Pure functions over data you already loaded, so the rules that decide who can read what are things you can unit-test instead of things buried in a `WHERE` clause.
 
 ```bash
-npm install threadkit
+pnpm add threadkit
 ```
 
 ## The idea
