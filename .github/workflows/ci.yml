@@ -5,6 +5,10 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  # Lets the auto-merge sweep re-arm CI after a GITHUB_TOKEN merge (which
+  # fires no push workflows) — without this, merged commits strand with no
+  # CI run on main.
+  workflow_dispatch:
 
 jobs:
   verify:
