@@ -117,3 +117,9 @@ There is no database adapter and no ORM. Load a thread and its messages however 
 ## Licence
 
 MIT
+
+---
+
+Part of **[bitbaum](https://bitbaum.orangecat.ch)** — AI-native products on open
+infrastructure, built in Zürich. Every package here lists the apps that use it:
+**[which apps use threadkit](https://bitbaum.orangecat.ch/packages/#threadkit)**.
