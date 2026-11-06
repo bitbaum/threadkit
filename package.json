@@ -1,5 +1,5 @@
 {
-  "name": "threadkit",
+  "name": "@bitbaum/threadkit",
   "version": "0.1.1",
   "description": "Headless multi-participant message threads. Permission is participation, unread is per-person, and an AI can be a participant subject to the same visibility rules as everyone else.",
   "license": "MIT",

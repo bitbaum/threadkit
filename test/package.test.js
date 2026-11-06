@@ -45,7 +45,7 @@ let probe;
 
 before(() => {
   workspace = mkdtempSync(join(tmpdir(), 'threadkit-pack-'));
-  installed = join(workspace, 'node_modules', 'threadkit');
+  installed = join(workspace, 'node_modules', '@bitbaum/threadkit');
   mkdirSync(installed, { recursive: true });
 
   execFileSync('npm', ['pack', '--silent', '--pack-destination', workspace], {
@@ -64,8 +64,8 @@ before(() => {
     join(workspace, 'probe.mjs'),
     [
       'const out = {};',
-      'try { out.resolved = import.meta.resolve("threadkit"); } catch { out.resolved = null; }',
-      'try { out.exports = Object.keys(await import("threadkit")).sort(); } catch { out.exports = null; }',
+      'try { out.resolved = import.meta.resolve("@bitbaum/threadkit"); } catch { out.resolved = null; }',
+      'try { out.exports = Object.keys(await import("@bitbaum/threadkit")).sort(); } catch { out.exports = null; }',
       'console.log(JSON.stringify(out));',
     ].join('\n'),
   );
@@ -79,11 +79,11 @@ before(() => {
 });
 
 test('the package resolves from a consumer install', () => {
-  assert.ok(probe.resolved, '"threadkit" did not resolve through its own exports map');
+  assert.ok(probe.resolved, '"@bitbaum/threadkit" did not resolve through its own exports map');
 });
 
 test('the entry point exposes its whole public API', () => {
-  assert.ok(probe.exports, 'importing "threadkit" from a consumer install threw');
+  assert.ok(probe.exports, 'importing "@bitbaum/threadkit" from a consumer install threw');
   for (const name of PUBLIC_API) {
     assert.ok(probe.exports.includes(name), `"${name}" is missing from the published entry point`);
   }

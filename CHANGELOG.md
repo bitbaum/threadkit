@@ -1,5 +1,12 @@
 # Changelog
 
+## Renamed — `threadkit` is now `@bitbaum/threadkit`
+
+Same code, same version, same repository; the package now lives under the
+`@bitbaum` npm organization like the rest of the fleet's packages. Install
+`@bitbaum/threadkit` and import from it (`threadkit` stays installable and is deprecated
+once no adopter uses it). No API changed.
+
 This retrospective record was added on 2026-10-27 from the immutable sources
 linked below. Git commit dates are source dates, not inferred npm publication
 dates. A GitHub release does not itself establish npm publication.
