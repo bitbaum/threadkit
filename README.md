@@ -1,11 +1,11 @@
-# threadkit
+# @bitbaum/threadkit
 
 Headless multi-participant message threads, with AI participants that obey the same rules as everyone else.
 
 No UI, no database, no SDK. Pure functions over data you already loaded, so the rules that decide who can read what are things you can unit-test instead of things buried in a `WHERE` clause.
 
 ```bash
-pnpm add threadkit
+pnpm add @bitbaum/threadkit
 ```
 
 ## The idea
@@ -31,7 +31,7 @@ That is correct while the clinic has exactly one doctor. On the day it has two, 
 Participation-based access cannot express that bug, because there is no role to check:
 
 ```ts
-import { canRead, visibleMessages } from 'threadkit'
+import { canRead, visibleMessages } from '@bitbaum/threadkit'
 
 if (!canRead(thread, actorId)) return forbidden()
 const messages = visibleMessages(thread, actorId, allMessages)
@@ -63,7 +63,7 @@ unreadThreadCount(entries, 'dr-b')         // the nav badge
 An AI is a participant, not an exception. It reads through the same visibility window as every human, so a model added to an existing thread sees what it was granted and nothing earlier.
 
 ```ts
-import { runAiTurn } from 'threadkit'
+import { runAiTurn } from '@bitbaum/threadkit'
 
 const result = await runAiTurn(thread, messages, {
   actorId: 'assistant-1',
