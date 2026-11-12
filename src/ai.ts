@@ -1,5 +1,6 @@
 import type { AiProvenance, CompleteFn, Message, Participant, Thread } from './types.js';
 import { canWrite, findParticipant, visibleMessages } from './participants.js';
+import { mentionMatcher } from './mentions.js';
 
 /**
  * An AI that participates in a thread rather than owning one.
@@ -62,16 +63,13 @@ export const afterEveryMessage: RespondPolicy = ({ visible, self }) => {
  * turn is noise and, between a doctor and a patient, an interruption.
  */
 export function whenMentioned(aliases: readonly string[]): RespondPolicy {
-  // Whole words only. A substring test looks fine until an alias like "ai"
-  // matches "again" or "wait" and the assistant starts answering turns nobody
-  // addressed to it.
-  const patterns = aliases
-    .filter(Boolean)
-    .map((a) => new RegExp(`(^|\\W)${a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(\\W|$)`, 'i'));
+  // Whole words only — see `mentionMatcher`, which an interface can share so
+  // "will the assistant answer this?" has one definition on both sides.
+  const mentioned = mentionMatcher(aliases);
   return ({ visible, self }) => {
     const last = visible[visible.length - 1];
     if (!last || last.authorId === self.actorId) return false;
-    return patterns.some((re) => re.test(last.body));
+    return mentioned(last.body);
   };
 }
 

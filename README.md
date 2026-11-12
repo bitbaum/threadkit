@@ -93,6 +93,43 @@ Defaults that keep it usable:
 
 Every reply carries `generatedBy`, so a record can say honestly which model wrote what.
 
+## Files on a message
+
+A message can carry files: `attachments` is a list of what was sent, never of where it is kept.
+
+```ts
+{ id: 'a1', kind: 'image', name: 'cat.jpg', mimeType: 'image/jpeg', bytes: 184_000, width: 1600, height: 1200 }
+```
+
+There is deliberately no URL on it. A link to a private file is a grant with an expiry, decided per reader at the moment of reading; whoever may see the message may see what was sent with it, and that question is `canSeeMessage`.
+
+Files are also where a messenger's costs live, so what may be attached is a policy, checked in the same words in the browser (before an upload starts) and on the server (because the browser can be anyone):
+
+```ts
+import { checkAttachment, DEFAULT_ATTACHMENT_POLICY } from '@bitbaum/threadkit'
+
+const check = checkAttachment(
+  { mimeType: file.type, bytes: file.size },
+  { onMessage: staged.length, usedBytes: storedByThisPerson },
+)
+if (!check.ok) return say(check) // 'type' | 'size' | 'count' | 'quota' | 'empty', each with its number
+```
+
+- **An allowlist, not a blocklist.** A type the policy does not name is refused. `image/svg+xml` and `text/html` are absent from the default on purpose: both can carry script, and a file opened from your storage origin runs there.
+- **A ceiling per kind.** A photo and a video are not the same risk.
+- **A quota per person**, counted over what is still stored, so deleting something frees room.
+- **A lifetime.** `isAbandonedUpload` finds the upload that never became a message; `attachmentExpiresAt` / `isAttachmentExpired` say when a sent file stops being kept, if your policy sets `retentionDays`.
+
+The package still stores nothing and signs nothing. It answers the questions; your storage does the work.
+
+## Read receipts that survive a third participant
+
+`readState(thread, message)` answers `'none' | 'some' | 'all'`, with the readers and the size of the audience. The audience is the people the message was for — humans who can see it and have not left. A model is left out: it has no reading to report, and counting it means a message in a room with an assistant can never be read by everyone.
+
+## Was it addressed?
+
+`mentionsAny(text, ['@cat'])` matches whole words only — `@catalogue` is somebody else, and an alias like `ai` does not fire inside "again". `whenMentioned` uses the same matcher, so a server deciding whether the assistant answers and an interface showing that it is about to cannot disagree.
+
 ## Bring your own storage
 
 There is no database adapter and no ORM. Load a thread and its messages however you already do, call the functions, write the result back. That is the whole integration surface — which is also why it works the same on Drizzle, Prisma, Supabase, or a JSON file.
@@ -111,6 +148,12 @@ There is no database adapter and no ORM. Load a thread and its messages however 
 | `unreadThreadCount(entries, actorId)` | threads with anything unread |
 | `mergeMessages(existing, incoming)` | dedupe, reconcile optimistic, order |
 | `compareMessages` / `isPending` | ordering and pending-state helpers |
+| `readState(thread, message)` | read by nobody else, some, or everyone it was for |
+| `checkAttachment(file, usage?, policy?)` | may this file be attached, and if not, why |
+| `attachmentKind(mimeType, policy?)` | image, video, audio, file — or `null` when refused |
+| `attachmentExpiresAt` / `isAttachmentExpired` / `isAbandonedUpload` | the lifetime rules |
+| `storedBytes(attachments)` | what a quota is compared against |
+| `mentionsAny(text, aliases)` / `mentionMatcher(aliases)` | whole-word mentions |
 | `runAiTurn(thread, messages, config)` | decide whether the AI speaks, and what it says |
 | `afterEveryMessage` / `whenMentioned` / `defaultRespondPolicy` | response policies |
 
