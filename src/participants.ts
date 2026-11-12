@@ -57,11 +57,11 @@ export function canSeeMessage(p: Participant, message: Message): boolean {
  * that forgets to check `canRead` first still leaks nothing. Failing closed is
  * the entire point.
  */
-export function visibleMessages(
+export function visibleMessages<M extends Message>(
   thread: Thread,
   actorId: string,
-  messages: readonly Message[],
-): Message[] {
+  messages: readonly M[],
+): M[] {
   const p = findParticipant(thread, actorId);
   if (!p) return [];
   return messages.filter((m) => m.threadId === thread.id && canSeeMessage(p, m));
@@ -81,4 +81,42 @@ export function readersOf(thread: Thread, message: Message): Participant[] {
     if (!p.lastReadAt) return false;
     return p.lastReadAt.getTime() >= message.createdAt.getTime();
   });
+}
+
+/**
+ * How far a message has been read: by nobody else, by some, or by everyone
+ * who could have.
+ *
+ * `audience` is the people the message was *for*: every human participant
+ * other than its author who can see it and has not left. A model is left out
+ * on purpose — it has no reading to report, and counting it would mean a
+ * message in a room with an assistant could never be "read by all".
+ *
+ * This is what a tick is drawn from. One grey tick, two, or two coloured is a
+ * presentation choice; which of the three states a message is in is a rule,
+ * and it has to be the same rule for two participants and for ten.
+ */
+export function readState(
+  thread: Thread,
+  message: Message,
+): {
+  readonly state: 'none' | 'some' | 'all';
+  readonly readers: readonly Participant[];
+  readonly audience: number;
+} {
+  const audience = thread.participants.filter(
+    (p) =>
+      p.kind === 'human' &&
+      p.actorId !== message.authorId &&
+      !p.leftAt &&
+      canSeeMessage(p, message),
+  );
+  const readers = readersOf(thread, message).filter((p) => p.kind === 'human' && !p.leftAt);
+  const state =
+    audience.length === 0 || readers.length === 0
+      ? 'none'
+      : readers.length >= audience.length
+        ? 'all'
+        : 'some';
+  return { state, readers, audience: audience.length };
 }

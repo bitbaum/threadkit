@@ -12,11 +12,11 @@ import { findParticipant, canSeeMessage } from './participants.js';
  */
 
 /** Messages this actor can see, did not write, and has not caught up to. */
-export function unreadMessages(
+export function unreadMessages<M extends Message>(
   thread: Thread,
   actorId: string,
-  messages: readonly Message[],
-): Message[] {
+  messages: readonly M[],
+): M[] {
   const p = findParticipant(thread, actorId);
   if (!p) return [];
   const since = p.lastReadAt?.getTime() ?? null;

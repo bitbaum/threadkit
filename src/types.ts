@@ -61,6 +61,37 @@ export interface Participant {
   readonly lastReadAt?: Date | null;
 }
 
+/**
+ * What a file on a message is, as a reader meets it.
+ *
+ * `image`, `video` and `audio` are shown in place; `file` is something to
+ * open or download. The split is by how it is used, not by where it is kept.
+ */
+export type AttachmentKind = 'image' | 'video' | 'audio' | 'file';
+
+/**
+ * A file that travels with a message.
+ *
+ * The thread knows what it is and how big it is; the bytes live in your object
+ * storage, under whatever key you gave them. Deliberately no URL here: a URL
+ * to a private file is a grant with an expiry, and that is decided per reader
+ * at the moment of reading, never stored on the message.
+ */
+export interface Attachment {
+  readonly id: string;
+  readonly kind: AttachmentKind;
+  /** The name the sender's device gave it. Shown to readers; never used as a path. */
+  readonly name: string;
+  readonly mimeType: string;
+  /** Size as stored, in bytes. What a quota counts. */
+  readonly bytes: number;
+  /** Pixels, for an image or a video — lets a reader lay it out before it loads. */
+  readonly width?: number;
+  readonly height?: number;
+  /** Length of a video or a recording, in milliseconds. */
+  readonly durationMs?: number;
+}
+
 /** Where an AI message came from, so a clinical record can say so honestly. */
 export interface AiProvenance {
   readonly model: string;
@@ -81,6 +112,12 @@ export interface Message {
   readonly clientId?: string;
   /** Present iff a model wrote this. Absent means a human or your system did. */
   readonly generatedBy?: AiProvenance;
+  /**
+   * Files sent with these words. A message may be only files: `body` is then
+   * the empty string. Visibility is the message's — whoever may see the
+   * message may see what was sent with it, and nobody else.
+   */
+  readonly attachments?: readonly Attachment[];
 }
 
 export interface Thread {
